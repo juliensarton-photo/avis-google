@@ -6,8 +6,8 @@ import { Resvg } from '@resvg/resvg-js';
 
 const OUT = '.';
 const SCALE = 2;              // image en 2x pour les écrans Retina
-const W = 150, H = 36;
-const VERSION = 2; // à incrémenter quand le design change, pour forcer un nouveau rendu
+const W = 144, H = 36;
+const VERSION = 3; // à incrémenter quand le design change, pour forcer un nouveau rendu
 const LOGO = ['google-g.svg', 'google-g.png'].find((f) => fs.existsSync(f)); // logo officiel déposé par toi        // taille affichée dans la signature (px)
 
 async function getPlace() {
@@ -61,11 +61,14 @@ async function render({ rating, count }) {
     padding: `0 ${s(9)}px`, fontFamily: 'Inter', color: '#1F1F1F',
   }, [
     ...(logo ? [logo] : []),
-    el('div', { fontSize: s(17), fontWeight: 800, letterSpacing: s(-0.5), marginRight: s(7) }, note),
+    el('div', { fontSize: s(17), fontWeight: 800, letterSpacing: s(-0.5), marginRight: s(7), flexShrink: 0 }, note),
     el('div', { display: 'flex', flexDirection: 'column' }, [
       { type: 'img', props: { src: st.uri, width: st.w, height: st.h } },
-      el('div', { fontSize: s(9), color: '#5F6368', marginTop: s(2), fontWeight: 600 },
-        `${count.toLocaleString('fr-FR')} avis Google`),
+      el('div', { display: 'flex', alignItems: 'center', fontSize: s(9), color: '#5F6368', marginTop: s(2), fontWeight: 600 }, [
+        `${count.toLocaleString('fr-FR')} avis`,
+        { type: 'img', props: { width: s(4.5), height: s(7), style: { marginLeft: s(4) },
+          src: 'data:image/svg+xml;base64,' + Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 12"><path d="M1.5 1l5 5-5 5" fill="none" stroke="#5F6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>').toString('base64') } },
+      ]),
     ]),
   ]);
 
