@@ -6,7 +6,8 @@ import { Resvg } from '@resvg/resvg-js';
 
 const OUT = '.';
 const SCALE = 2;              // image en 2x pour les écrans Retina
-const W = 330, H = 72;
+const W = 150, H = 36;
+const VERSION = 2; // à incrémenter quand le design change, pour forcer un nouveau rendu
 const LOGO = ['google-g.svg', 'google-g.png'].find((f) => fs.existsSync(f)); // logo officiel déposé par toi        // taille affichée dans la signature (px)
 
 async function getPlace() {
@@ -46,31 +47,25 @@ function starsSvg(rating, size) {
 async function render({ rating, count }) {
   const font = (w) => fs.readFileSync(`node_modules/@fontsource/inter/files/inter-latin-${w}-normal.woff`);
   const s = (n) => n * SCALE;
-  const st = starsSvg(rating, s(17));
+  const st = starsSvg(rating, s(11));
   const note = rating.toFixed(1).replace('.', ',');
   const el = (type, style, children) => ({ type, props: { style, children } });
 
   const logo = LOGO && {
-    type: 'img', props: { width: s(26), height: s(26), style: { marginRight: s(12) },
+    type: 'img', props: { width: s(16), height: s(16), style: { marginRight: s(7) },
       src: `data:image/${LOGO.endsWith('.svg') ? 'svg+xml' : 'png'};base64,` + fs.readFileSync(LOGO).toString('base64') },
   };
   const tree = el('div', {
     width: s(W), height: s(H), display: 'flex', alignItems: 'center',
-    background: '#FFFFFF', border: `${s(1)}px solid #E6E6E6`, borderRadius: s(12),
-    padding: `0 ${s(16)}px`, fontFamily: 'Inter', color: '#1F1F1F',
+    background: '#FFFFFF', border: `${s(1)}px solid #E6E6E6`, borderRadius: s(8),
+    padding: `0 ${s(9)}px`, fontFamily: 'Inter', color: '#1F1F1F',
   }, [
     ...(logo ? [logo] : []),
-    el('div', { fontSize: s(34), fontWeight: 800, letterSpacing: s(-1), marginRight: s(14) }, note),
-    el('div', { display: 'flex', flexDirection: 'column', flexGrow: 1 }, [
+    el('div', { fontSize: s(17), fontWeight: 800, letterSpacing: s(-0.5), marginRight: s(7) }, note),
+    el('div', { display: 'flex', flexDirection: 'column' }, [
       { type: 'img', props: { src: st.uri, width: st.w, height: st.h } },
-      el('div', { fontSize: s(12.5), color: '#5F6368', marginTop: s(5), fontWeight: 400 },
+      el('div', { fontSize: s(9), color: '#5F6368', marginTop: s(2), fontWeight: 600 },
         `${count.toLocaleString('fr-FR')} avis Google`),
-    ]),
-    el('div', { fontSize: s(12), fontWeight: 600, color: '#1F1F1F', borderLeft: `${s(1)}px solid #E6E6E6`,
-      paddingLeft: s(14), height: s(40), display: 'flex', alignItems: 'center' }, [
-      'Lire les avis',
-      { type: 'img', props: { width: s(8), height: s(12), style: { marginLeft: s(6) },
-        src: 'data:image/svg+xml;base64,' + Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 12"><path d="M1.5 1l5 5-5 5" fill="none" stroke="#1F1F1F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>').toString('base64') } },
     ]),
   ]);
 
@@ -108,9 +103,9 @@ const s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('c
 const place = await getPlace();
 const prev = fs.existsSync(`${OUT}/data.json`) ? JSON.parse(fs.readFileSync(`${OUT}/data.json`)) : {};
 fs.mkdirSync(OUT, { recursive: true });
-if (prev.rating !== place.rating || prev.count !== place.count || !fs.existsSync(`${OUT}/badge.png`) || process.env.FORCE) {
+if (prev.v !== VERSION || prev.rating !== place.rating || prev.count !== place.count || !fs.existsSync(`${OUT}/badge.png`) || process.env.FORCE) {
   fs.writeFileSync(`${OUT}/badge.png`, await render(place));
-  fs.writeFileSync(`${OUT}/data.json`, JSON.stringify({ ...place, updated: new Date().toISOString() }, null, 2));
+  fs.writeFileSync(`${OUT}/data.json`, JSON.stringify({ ...place, v: VERSION, updated: new Date().toISOString() }, null, 2));
   console.log('Badge mis à jour :', place);
 } else {
   console.log('Rien de neuf :', place);
