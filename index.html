@@ -1,0 +1,20 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Signature Julien Sarton</title>
+<style>body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px;color:#222}
+.bloc{border:2px dashed #ccc;padding:20px;border-radius:8px;margin:12px 0 8px}button{font-size:15px;padding:8px 16px;cursor:pointer;margin-bottom:28px}</style>
+</head><body>
+<h1>Ma signature Gmail</h1>
+<p>Clique sur « Copier », puis colle (⌘V) au bon endroit dans Gmail → Paramètres → Voir tous les paramètres → Signature.</p>
+<h2>Photo</h2>
+<div class="bloc" id="photo"><a href="https://juliensarton.fr" target="_blank"><img src="__BASE__photo.png" width="110" height="110" alt="Julien Sarton" style="display:block;border:0;width:110px;height:110px;border-radius:50%"></a></div>
+<button onclick="copy('photo',this)">Copier la photo</button>
+<h2>Badge avis Google</h2>
+<div class="bloc" id="badge"><a href="https://search.google.com/local/reviews?placeid=ChIJnXvPgQFjsE8RavDFEUXUaSQ" target="_blank"><img src="__BASE__badge.png" width="330" height="72" alt="Avis Google – Julien Sarton" style="display:block;border:0;width:330px;height:72px"></a></div>
+<button onclick="copy('badge',this)">Copier le badge</button>
+<script>
+// remplace __BASE__ par l'adresse absolue de la page, pour que Gmail récupère les bonnes URL
+const base=location.href.replace(/[^/]*$/,'');
+document.querySelectorAll('img').forEach(i=>i.src=i.getAttribute('src').replace('__BASE__',base));
+function copy(id,btn){const r=document.createRange();r.selectNode(document.getElementById(id).firstElementChild);
+const s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('copy');s.removeAllRanges();btn.textContent='Copié ✔';}
+</script></body></html>
