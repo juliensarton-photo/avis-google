@@ -5,9 +5,10 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
 const OUT = '.';
-const SCALE = 2;              // image en 2x pour les écrans Retina
-const W = 144, H = 36;
-const VERSION = 3; // à incrémenter quand le design change, pour forcer un nouveau rendu
+const SCALE = 2 * 1.25;   // 2x pour les écrans Retina, et badge 25 % plus grand
+const W = 144, H = 36;    // unités de dessin
+const DW = Math.round(W * 1.25), DH = Math.round(H * 1.25); // taille affichée dans Gmail
+const VERSION = 4; // à incrémenter quand le design change, pour forcer un nouveau rendu
 const LOGO = ['google-g.svg', 'google-g.png'].find((f) => fs.existsSync(f)); // logo officiel déposé par toi        // taille affichée dans la signature (px)
 
 async function getPlace() {
@@ -92,7 +93,7 @@ function signatureHtml(placeId) {
 <div class="bloc" id="photo"><a href="https://juliensarton.fr" target="_blank"><img src="__BASE__photo.png" width="110" height="110" alt="Julien Sarton" style="display:block;border:0;width:110px;height:110px;border-radius:50%"></a></div>
 <button onclick="copy('photo',this)">Copier la photo</button>
 <h2>Badge avis Google</h2>
-<div class="bloc" id="badge"><a href="${reviews}" target="_blank"><img src="__BASE__badge.png" width="${W}" height="${H}" alt="Avis Google – Julien Sarton" style="display:block;border:0;width:${W}px;height:${H}px"></a></div>
+<div class="bloc" id="badge"><a href="${reviews}" target="_blank"><img src="__BASE__badge.png?v=${VERSION}" width="${DW}" height="${DH}" alt="Avis Google – Julien Sarton" style="display:block;border:0;width:${DW}px;height:${DH}px"></a></div>
 <button onclick="copy('badge',this)">Copier le badge</button>
 <script>
 // remplace __BASE__ par l'adresse absolue de la page, pour que Gmail récupère les bonnes URL
