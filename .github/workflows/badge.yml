@@ -1,0 +1,26 @@
+name: Badge avis Google
+on:
+  schedule:
+    - cron: "17 5 * * *"   # tous les jours vers 7h (heure de Paris)
+  workflow_dispatch:        # bouton « Run workflow » pour lancer à la main
+permissions:
+  contents: write
+jobs:
+  badge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: node generate.mjs
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          PLACE_ID: ${{ secrets.PLACE_ID }}
+      - name: Enregistrer si la note a changé
+        run: |
+          git config user.name "badge-bot"
+          git config user.email "badge-bot@users.noreply.github.com"
+          git add badge.png data.json index.html
+          git diff --cached --quiet || (git commit -m "Mise à jour du badge avis Google" && git push)
